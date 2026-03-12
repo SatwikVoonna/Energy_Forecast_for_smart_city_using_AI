@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+pandas
+numpy
+scikit-learn
+xgboost
+torch
+streamlit
+plotly
+requests
+websockets
+joblib
+openmeteo-requests
+requests-cache
+retry-requests
