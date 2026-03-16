@@ -1,3 +1,26 @@
+[project]
+name = "smartgrid_ai"
+version = "0.1.0"
+description = "Smart Grid AI Demand Forecasting System"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "pydantic-settings",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "xgboost",
+    "torch",
+    "requests",
+    "websockets",
+    "joblib",
+    "openmeteo-requests",
+    "requests-cache",
+    "retry-requests",
+]
+
 [tool.pyright]
 include = ["app"]
 executionEnvironments = [
