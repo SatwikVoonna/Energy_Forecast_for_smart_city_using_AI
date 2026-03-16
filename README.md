@@ -20,8 +20,6 @@ smartgrid_ai/
 ├── training/                   # Model Training & Evaluation
 │   └── model_training.py       # Training Scripts for XGBoost, LSTM, etc.
 ├── models/                     # Serialized Model Artifacts (.joblib, .pt)
-├── dashboard/                  # Streamlit Analytics Dashboard
-│   └── dashboard.py            # Main Streamlit Application
 ├── frontend/                   # Modern React/Vite/Tailwind Frontend
 │   ├── src/                    # TypeScript Source Code
 │   │   ├── pages/              # Dashboard & Landing Pages
@@ -41,9 +39,8 @@ smartgrid_ai/
 *   **WebSockets**: Utilized for live telemetry and real-time anomaly alerts.
 *   **Uvicorn**: ASGI server for running the FastAPI application.
 
-### Frontend Options
-1.  **React (Vite + TypeScript)**: A premium, desktop-grade dashboard with modern transitions and high-fidelity charts.
-2.  **Streamlit**: A rapid-deployment dashboard for data exploration and real-time metrics monitoring.
+### Frontend
+*   **React (Vite + TypeScript)**: A premium, desktop-grade dashboard with modern transitions and high-fidelity charts.
 
 ### Modeling & Data
 *   **PyTorch**: Framework for the LSTM (Long Short-Term Memory) neural network.
@@ -107,5 +104,5 @@ pip install -r requirements.txt
 ### Running the System
 1.  **Pipeline**: `python data_pipeline/data_pipeline.py` (Prepare the dataset)
 2.  **Training**: `python training/model_training.py` (Train AI models)
-3.  **Backend**: `uvicorn app.main:app --reload` (Start API)
-4.  **Dashboard**: `streamlit run dashboard/dashboard.py` (View Analytics)
+3.  **Backend**: `uvicorn app.main:app` (Start API)
+4.  **Frontend**: `cd frontend && npm run dev` (Start React Dashboard)

@@ -2,7 +2,7 @@ import os
 import joblib
 import torch
 import torch.nn as nn
-from app.core.config import (
+from .config import (
     XGBOOST_MODEL_PATH, LSTM_MODEL_PATH, ENSEMBLE_MODEL_PATH,
     ANOMALY_DETECTOR_PATH, TARGET_SCALER_PATH, FEATURE_SCALER_PATH,
     FORECAST_DATASET_PATH

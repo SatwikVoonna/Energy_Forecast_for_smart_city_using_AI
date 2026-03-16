@@ -1,6 +1,6 @@
 import pandas as pd
 from functools import lru_cache
-from app.core.config import FORECAST_DATASET_PATH, ANOMALY_DATASET_PATH
+from .config import FORECAST_DATASET_PATH, ANOMALY_DATASET_PATH
 
 @lru_cache(maxsize=2)
 def get_cached_dataframe(path: str) -> pd.DataFrame:
