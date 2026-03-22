@@ -32,7 +32,7 @@ class CarbonResponse(BaseModel):
 
 
 @router.get("/carbon", response_model=CarbonResponse)
-async def get_carbon_savings():
+def get_carbon_savings():
     """
     Derives real CO₂ savings from the battery dispatch plan computed on the
     actual forecast dataset.  No synthetic data is used anywhere in this

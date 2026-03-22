@@ -19,11 +19,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.core.data_cache import get_cached_dataframe
+from app.core.config import FORECAST_DATASET_PATH, ANOMALY_DATASET_PATH
+
 @app.on_event("startup")
 async def startup_event():
     print("Pre-loading trained ML models...")
     model_manager.load_models()
-    print("Models loaded successfully.")
+    print("Pre-loading datasets into cache...")
+    try:
+        get_cached_dataframe(FORECAST_DATASET_PATH)
+        get_cached_dataframe(ANOMALY_DATASET_PATH)
+    except Exception as e:
+        print(f"Dataset pre-load failed: {e}")
+    print("Models and datasets loaded successfully.")
 
 @app.get("/")
 def root():

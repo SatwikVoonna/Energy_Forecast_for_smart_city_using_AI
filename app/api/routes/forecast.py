@@ -20,7 +20,7 @@ class ForecastResponse(BaseModel):
     upper_bound: float
 
 @router.get("/forecast", response_model=List[ForecastResponse])
-async def get_forecast(horizon: int = 24, model: str = "ensemble"):
+def get_forecast(horizon: int = 24, model: str = "ensemble"):
     if not model_manager.xgb_model:
         raise HTTPException(status_code=500, detail="Models not loaded")
 

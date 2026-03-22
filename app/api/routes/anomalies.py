@@ -18,7 +18,7 @@ class AnomalyResponse(BaseModel):
     actual_kwh: float
 
 @router.get("/anomalies", response_model=List[AnomalyResponse])
-async def get_anomalies():
+def get_anomalies():
     if not model_manager.anomaly_detector or not model_manager.xgb_model:
         raise HTTPException(status_code=500, detail="Models not loaded")
 

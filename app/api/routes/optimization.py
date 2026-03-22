@@ -21,7 +21,7 @@ class OptimizationResponse(BaseModel):
     dispatch_plan:  Dict[str, str]
 
 @router.post("/optimize", response_model=OptimizationResponse)
-async def optimize_battery(req: OptimizationRequest):
+def optimize_battery(req: OptimizationRequest):
     try:
         df = get_cached_dataframe(FORECAST_DATASET_PATH)
     except FileNotFoundError:

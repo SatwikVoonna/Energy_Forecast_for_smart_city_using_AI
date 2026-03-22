@@ -18,7 +18,7 @@ class RenewableResponse(BaseModel):
     renewable_utilization_pct: float
 
 @router.get("/renewables/netload", response_model=RenewableResponse)
-async def get_renewables_netload():
+def get_renewables_netload():
     try:
         df = get_cached_dataframe(FORECAST_DATASET_PATH)
     except FileNotFoundError:
