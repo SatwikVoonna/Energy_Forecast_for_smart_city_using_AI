@@ -4,6 +4,62 @@ import Chart from 'chart.js/auto';
 import { Link } from 'react-router-dom';
 import '../App.css';
 
+function AIInsightButton({ anomaly }: { anomaly: any }) {
+  const [loading, setLoading] = useState(false);
+  const [insight, setInsight] = useState<any>(null);
+
+  const getInsight = async () => {
+    setLoading(true);
+    try {
+      const baseUrl = window.location.hostname === 'localhost' ? 'http://127.0.0.1:8000' : '';
+      const r = await fetch(`${baseUrl}/insights`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          timestamp: anomaly.timestamp,
+          actual_kwh: anomaly.actual_kwh,
+          expected_kwh: anomaly.expected_kwh,
+          severity: anomaly.severity
+        })
+      });
+      const d = await r.json();
+      setInsight(d);
+    } catch (e) {
+      console.error(e);
+      setInsight({ insight: "Error fetching AI analysis.", recommendation: "Manual inspection required." });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="ai-insight-wrap" style={{ marginTop: '12px' }}>
+      {!insight ? (
+        <button 
+          onClick={getInsight} 
+          disabled={loading}
+          className="btn-ai-insight"
+          style={{ 
+            background: 'rgba(201,168,76,0.1)', 
+            border: '1px solid var(--gold)', 
+            color: 'var(--gold)', 
+            fontSize: '0.7rem', 
+            padding: '4px 10px', 
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          {loading ? 'Analyzing...' : '✨ Get AI Analysis'}
+        </button>
+      ) : (
+        <div className="ai-insight-result" style={{ borderLeft: '2px solid var(--gold)', paddingLeft: '10px', fontSize: '0.8rem', color: 'var(--cream)' }}>
+          <p style={{ margin: '4px 0', opacity: 0.9 }}><strong>Reason:</strong> {insight.insight}</p>
+          <p style={{ margin: '4px 0', color: 'var(--gold)' }}><strong>Action:</strong> {insight.recommendation}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Dashboard() {
 
   const [demand, setDemand] = useState(14661);
@@ -15,28 +71,34 @@ export default function Dashboard() {
   const [renData, setRenData] = useState<any>(null);
   const [optData, setOptData] = useState<any>(null);
   const [carbonData, setCarbonData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<any>(null);
   const [displayedCO2, setDisplayedCO2] = useState(0);
   const [displayedTrees, setDisplayedTrees] = useState(0);
 
   useEffect(() => {
+    const baseUrl = window.location.hostname === 'localhost' ? 'http://127.0.0.1:8000' : '';
     Promise.all([
-      fetch('http://127.0.0.1:8000/forecast?horizon=24').then(r => r.json()),
-      fetch('http://127.0.0.1:8000/anomalies').then(r => r.json()),
-      fetch('http://127.0.0.1:8000/renewables/netload').then(r => r.json()),
-      fetch('http://127.0.0.1:8000/optimize', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({}) }).then(r => r.json()),
-      fetch('http://127.0.0.1:8000/carbon').then(r => r.json())
-    ]).then(([fRes, aRes, rRes, oRes, cRes]) => {
+      fetch(`${baseUrl}/forecast?horizon=24`).then(r => r.json()),
+      fetch(`${baseUrl}/anomalies`).then(r => r.json()),
+      fetch(`${baseUrl}/renewables/netload`).then(r => r.json()),
+      fetch(`${baseUrl}/optimize`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({}) }).then(r => r.json()),
+      fetch(`${baseUrl}/carbon`).then(r => r.json()),
+      fetch(`${baseUrl}/weather`).then(r => r.json()).catch(() => null)
+    ]).then(([fRes, aRes, rRes, oRes, cRes, wRes]) => {
       setForecastData(fRes);
       setAnomalyData(aRes);
       setRenData(rRes);
       setOptData(oRes);
       setCarbonData(cRes);
+      setWeatherData(wRes);
       setDataLoaded(true);
     }).catch(e => console.error("API error", e));
   }, []);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://127.0.0.1:8000/stream');
+    const baseUrl = window.location.hostname === 'localhost' ? '127.0.0.1:8000' : window.location.host;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${baseUrl}/stream`);
     ws.onmessage = (e) => {
       try {
         const d = JSON.parse(e.data);
@@ -337,6 +399,15 @@ export default function Dashboard() {
   DEMAND: <span className="demand-val" id="liveVal">{demand.toLocaleString()} MW</span>
    | 
   STATUS: <span className="highlight" style={{color: wsStatus === 'STABLE' ? 'var(--green)' : 'var(--red)'}}>{wsStatus}</span>
+  {weatherData && weatherData.temperature !== undefined && (
+    <>
+      <span style={{ margin: '0 15px', opacity: 0.3 }}>|</span>
+      <span className="weather-val" style={{ color: 'var(--cream)', fontSize: '0.8rem' }}>
+        CHENNAI: {weatherData.temperature}°C {weatherData.description?.toUpperCase() || 'WEATHER UNKNOWN'}
+      </span>
+    </>
+  )}
+
 </div>
 
 {/* ══ NAV ══ */}
@@ -437,6 +508,7 @@ export default function Dashboard() {
                 Anomaly Score: {a.score.toFixed(2)}.
               </div>
               <div className="alert-time">{new Date(a.timestamp).toLocaleString()} · AI DETECTOR</div>
+              <AIInsightButton anomaly={a} />
             </div>
             <div className={`alert-badge badge-${a.severity === 'High' ? 'red' : 'amber'}`}>
               {a.severity.toUpperCase()}

@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
@@ -15,3 +18,12 @@ FEATURE_SCALER_PATH = os.path.join(MODELS_DIR, "feature_scaler.pkl")
 FORECAST_DATASET_PATH = os.path.join(DATA_DIR, "forecast_dataset.csv")
 ANOMALY_DATASET_PATH = os.path.join(DATA_DIR, "anomaly_dataset.csv")
 METRICS_PATH = os.path.join(RESULTS_DIR, "model_results.json")
+
+# External APIs
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
+# Default Location (Chennai, India)
+CITY_LAT = 13.0827
+CITY_LON = 80.2707
+

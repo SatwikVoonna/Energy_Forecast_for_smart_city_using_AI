@@ -23,7 +23,9 @@ dependencies = [
     "openmeteo-requests",
     "requests-cache",
     "retry-requests",
+    "google-generativeai",
 ]
+
 
 [tool.pyright]
 include = ["app"]

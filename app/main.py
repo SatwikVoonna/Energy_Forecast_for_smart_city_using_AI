@@ -6,6 +6,8 @@ from app.api.routes.renewables import router as renewables_router
 from app.api.routes.optimization import router as optimization_router
 from app.api.routes.metrics import router as metrics_router
 from app.api.routes.carbon import router as carbon_router
+from app.api.routes.insights import router as insights_router
+from app.api.routes.weather import router as weather_router
 from app.api.websocket import router as ws_router
 from app.core.model_loader import model_manager
 
@@ -44,4 +46,7 @@ app.include_router(renewables_router, tags=["Renewables"])
 app.include_router(optimization_router, tags=["Optimization"])
 app.include_router(metrics_router, tags=["Metrics"])
 app.include_router(carbon_router, tags=["Carbon"])
+app.include_router(insights_router, tags=["AI Insights"])
+app.include_router(weather_router, tags=["Weather"])
 app.include_router(ws_router, tags=["WebSocket"])
+
